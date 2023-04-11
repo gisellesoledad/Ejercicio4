@@ -34,29 +34,56 @@ public class ObjetosEj4 {
         List <Equipo> equipos = new ArrayList <Equipo> ();
         List <Partido> partidos = new ArrayList <Partido> ();
         
+        
+       
+        
+        //para leer el archivo necesito el for y el filesreadallines
         for (String nombreEquipo :Files.readAllLines(pathEquipo)){
             Equipo e = new Equipo(nombreEquipo);
-            equipos.add(e);
+            equipos.add(e); 
         }
-        for (String lineaPartido :Files.readAllLines(pathPartido)){
-            String[] lineaDividida=lineaPartido.split(";");
-            String nombreEquipo1 = lineaDividida[0]; // separando los datos
-          //  int golesEquipo1 = Integer.valueOf(lineaDividida[1]);
-            System.out.println(lineaDividida[0]);
-            
-            
-        }
-      
-    
-    
  
-     
-           
-           
-   
+        boolean primeraLinea = true;
+        for (String lineaPartido :Files.readAllLines(pathPartido)){
+                    
+            if (primeraLinea==false){
+                String[] lineaDividida=lineaPartido.split(";");
+                String nombreEquipo1 = lineaDividida[0];
+                int golesEquipo1 = Integer.valueOf(lineaDividida[1]);
+                String nombreEquipo2 =lineaDividida[2];
+                int golesEquipo2 = Integer.valueOf(lineaDividida[3]);
+                
+                Equipo e1 = buscarEquipo (equipos,nombreEquipo1);
+                Equipo e2 = buscarEquipo (equipos,nombreEquipo2);
+                Partido p = new Partido( e1, e2, golesEquipo1, golesEquipo2);
+                partidos.add(p);     
+            }
+            primeraLinea = false;
+            
+        }
         
+        for (Partido p:partidos){
+            p.calcularPuntosEquipo1();
+            p.calcularPuntosEquipo2();
+            p.actualizarGolesEquipo1();
+            p.actualizarGolesEquipo2();
+        }
+        
+        for (Equipo e : equipos){
+            System.out.println(e.getNombre() + " - " + e.getPuntaje() + "-" + e.getGolesAFavor() + "-" + e.getGolesEnContra());
+        }
+        
+
     }
-    
+    public static Equipo buscarEquipo( List <Equipo> equipos,String nombre ){
+           for (Equipo e:equipos){
+               if (e.getNombre().equals(nombre)){
+                   return e;
+               }
+           }
+           return null;
+           
+    }
     
     
 }
